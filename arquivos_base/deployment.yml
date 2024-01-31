@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1 
+  labels:
+    app: app1 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app1 
+  template:
+    metadata:
+      labels:
+        app: app1 
+    spec:
+      containers:
+      - name: app1 
+        image: carlosfalcone/projeto2-backfront:%TAG_BACKFRONT%
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - image: carlosfalcone/projeto2-database:%TAG_DATABASE%
+        args:
+        - "--ignore-db-dir=lost+found"
+        imagePullPolicy: Always
+        name: mysql
+        ports:
+        - containerPort: 3306
+          name: mysql
+        
+        # secrets para o mysql
+        env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: MYSQL_ROOT_PASSWORD
+                  
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: MYSQL_DATABASE
+
+        # Implementaçao do PV e PVC
+        volumeMounts:
+        - name: local
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: local
+        persistentVolumeClaim:
+          claimName: local
+
+
+---
+apiVersion: v1 
+kind: PersistentVolume
+metadata:
+  name: local
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /meubanco/
+
+---
+apiVersion: v1 
+kind: PersistentVolumeClaim
+metadata:
+  name: local
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-connection
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: mysql
+  clusterIP: None
