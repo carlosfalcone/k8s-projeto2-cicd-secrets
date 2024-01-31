@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: app1 
-        image: carlosfalcone/projeto2-backfront:14
+        image: carlosfalcone/projeto2-backfront:1.1
         imagePullPolicy: Always
         ports:
         - containerPort: 80
@@ -37,7 +37,7 @@ spec:
         app: mysql
     spec:
       containers:
-      - image: carlosfalcone/projeto2-database:11
+      - image: carlosfalcone/projeto2-database:1.1
         args:
         - "--ignore-db-dir=lost+found"
         imagePullPolicy: Always
@@ -68,6 +68,7 @@ spec:
       - name: local
         persistentVolumeClaim:
           claimName: local
+
 
 ---
 apiVersion: v1 

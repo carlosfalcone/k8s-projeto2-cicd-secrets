@@ -1,3 +1,6 @@
+NOTA: COM A INCLUSAO DO SECRETS PARA ACESSO AO MYSQL DENTRO DO ARQUIVO DEPLOYMENT.YML, NAO É POSSIVEL MAIS ENTRAR DENTRO DO POD MYSQL, PARA VERIFICAÇAO DAS MENSAGENS SALVAS NO BANCO DE DADOS!!!
+
+
 # Construção da arquitetura: aplicação e banco de dados
 
 1 - Arquitetura proposta para o projeto:
@@ -25,7 +28,7 @@
 8 - Verifique se o serviço foi carregado:
     kubectl get services (deve aparecer o app1-service e o my-secret)
 
-9 - Copie a url de acesso ao pod, extraida na execuçao do script s1-load...:
+9 - Exclua o arquivo secrets.yml e copie a url de acesso ao pod, extraida na execuçao do script s1-load...:
 
 10 - Copie e salve esta url no arquivo na linha exemplificada abaixo, no arquivo js.js:
     url: "http://192.168.59.101:30203/incluir.php",
@@ -33,7 +36,7 @@
 11 - Suba os arquivos locais para o diretorio remoto no github. Observe que o arquivo js.js já será carregado com a alterçao na url acima.
     git init >>
     git add . >>
-    git commit "insira-aqui-seu-texto" >>
+    git commit -m "insira-aqui-seu-texto" >>
     git branch -M main >>
     git remote add origin copie-e-cole-o-caminho-para-clone-https >>
     git push -u origin main
@@ -89,10 +92,11 @@ Diferenças entre esse projeto e o projeto 'k8s-projeto2':
 
 2 - No arquivo cicd.yml estao as chaves secretas para acesso ao docker hub. Os valores das chaves estao guardados no github Actions secrets
 
+3 - crie o arquivo secrets.yml e delete-o após carregá-lo
 
-3 - Outros comandos relacionados:
-minikube start
-minikube status
-minikube stop
-minikube delete
+4 - Outros comandos relacionados:
+minikube start >>
+minikube status >>
+minikube stop >>
+minikube delete >>
 minikube ssh
